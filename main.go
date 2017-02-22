@@ -32,6 +32,11 @@ func handleOutput(r io.Reader, wg *sync.WaitGroup, c chan struct{}) {
 
 	b := bufio.NewReader(r)
 	line, err := b.ReadString('\n')
+	// end of file is not an error
+	if err != nil && err == io.EOF {
+		return
+	}
+
 	handleErr(err)
 
 	line = strings.TrimSpace(line)
@@ -135,7 +140,7 @@ func main() {
 		"diff-index",
 		"--cached",
 		"--name-only",
-		"--diff-filter=ACMRTUXB",
+		"--diff-filter=ACdMRTUXB",
 		"HEAD",
 	)
 	stdout, err := cmd.StdoutPipe()
